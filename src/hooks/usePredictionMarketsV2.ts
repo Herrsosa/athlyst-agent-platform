@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { createRequestId } from '@/utils/requestId';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/store/auth';
@@ -180,14 +181,6 @@ export function usePredictionMarketV2(marketId: string | undefined) {
   });
 }
 
-function buildIdempotencyKey() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID();
-  }
-
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
 export function usePlacePredictionEntryV2() {
   const queryClient = useQueryClient();
   const user = useUser();
@@ -217,7 +210,7 @@ export function usePlacePredictionEntryV2() {
           stakeAmount,
         },
         headers: {
-          'X-Idempotency-Key': buildIdempotencyKey(),
+          'X-Idempotency-Key': createRequestId(),
         },
       });
 

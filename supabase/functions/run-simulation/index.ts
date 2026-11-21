@@ -232,8 +232,8 @@ serve(async (req) => {
                     if (!postErr) result.posts++;
                 }
 
-            } catch (e) {
-                result.errors.push(`Error for ${profile.name}: ${e}`);
+            } catch {
+                result.errors.push(`Simulation failed for ${profile.name}`);
             }
         }
 
@@ -241,9 +241,8 @@ serve(async (req) => {
             status: 200,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return new Response(JSON.stringify({ error: errorMessage }), {
+    } catch {
+        return new Response(JSON.stringify({ error: "Simulation failed" }), {
             status: 500,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
         });

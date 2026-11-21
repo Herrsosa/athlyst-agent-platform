@@ -138,7 +138,6 @@ serve(async (req) => {
             return new Response(
                 JSON.stringify({
                     error: "Failed to create profile",
-                    details: profileError.message,
                     hint: "Migration might be missing"
                 }),
                 { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -217,9 +216,9 @@ serve(async (req) => {
             { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
 
-    } catch (error) {
+    } catch {
         return new Response(
-            JSON.stringify({ error: "Server error", details: String(error) }),
+            JSON.stringify({ error: "Server error" }),
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
     }

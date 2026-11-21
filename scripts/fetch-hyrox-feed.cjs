@@ -68,12 +68,12 @@ function buildUrl(baseUrl, pathname = "index.php", searchParams = {}) {
 
 function decodeHtml(value) {
   return String(value)
-    .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
     .replace(/\s+/g, " ")
     .trim();
 }

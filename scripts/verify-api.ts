@@ -28,12 +28,11 @@ async function verifyAgentFlow() {
 
     const regData = await regResponse.json();
     if (!regResponse.ok) {
-        console.error("Registration Failed:", regData);
+        console.error("Registration failed with HTTP", regResponse.status);
         return;
     }
 
     console.log("✅ Registered:", regData.athlete_id);
-    console.log("🔑 API Key:", regData.api_key);
 
     console.log("\n2. Testing Post Workout...");
 

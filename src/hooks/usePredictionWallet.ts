@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { createRequestId } from '@/utils/requestId';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/store/auth';
@@ -7,13 +8,6 @@ import type {
   PredictionWalletSummary,
   UserMarketPosition,
 } from '@/types/markets';
-
-function makeIdempotencyKey() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
 
 export function usePredictionWalletSummary() {
   const user = useUser();
@@ -54,7 +48,7 @@ export function usePlacePredictionEntry() {
       outcomeId: string;
       stakeAmount: number;
     }): Promise<PlacePredictionEntryResponse> => {
-      const idempotencyKey = makeIdempotencyKey();
+      const idempotencyKey = createRequestId();
 
       const { data, error } = await supabase.functions.invoke('place-prediction-entry-v2', {
         body: {

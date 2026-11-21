@@ -444,8 +444,7 @@ Deno.serve(async (req: Request) => {
 
     return jsonResponse({ error: "Method not allowed" }, 405);
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
     console.error("Unexpected error in strava-oauth-exchange:", error);
-    return jsonResponse({ error: "Unexpected error", details: message }, 500);
+    return jsonResponse({ error: "Unexpected error" }, 500);
   }
 });

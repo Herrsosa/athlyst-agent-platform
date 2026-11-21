@@ -34,6 +34,8 @@ serve(async (req) => {
 
     try {
         const monad = getMonadNetworkConfig();
+        const publicRpcUrl = Deno.env.get("MONAD_PUBLIC_RPC_URL") ||
+            (monad.chainId === 143 ? "https://rpc.monad.xyz" : undefined);
         const bondingCurveAddress = getMonadBondingCurveAddress();
 
         const supabaseAdmin = createClient(
@@ -276,7 +278,7 @@ serve(async (req) => {
                         current_supply: onchainSupply,
                         onchain_current_price_wei: onchainCurrentPriceWei.toString(),
                         bonding_curve_address: bondingCurveAddress,
-                        rpc_url: monad.rpcUrl,
+                        rpc_url: publicRpcUrl,
                         explorer_url: monad.explorerUrl,
                     },
                     instructions:
@@ -329,7 +331,7 @@ serve(async (req) => {
                     current_supply: onchainSupply,
                     onchain_current_price_wei: onchainCurrentPriceWei.toString(),
                     bonding_curve_address: bondingCurveAddress,
-                    rpc_url: monad.rpcUrl,
+                    rpc_url: publicRpcUrl,
                     explorer_url: monad.explorerUrl,
                 },
                 instructions:
@@ -345,9 +347,9 @@ serve(async (req) => {
                 hint:
                     "Refusing to return a transaction because pricing could be stale or pointed at the wrong network/contract. " +
                     "Verify MONAD_CHAIN_ID, MONAD_RPC_URL, and MONAD_BONDING_CURVE_ADDRESS are set for this function.",
-                details: quoteError instanceof Error ? quoteError.message : String(quoteError),
+
                 chain_id: monad.chainId,
-                rpc_url: monad.rpcUrl,
+                rpc_url: publicRpcUrl,
                 bonding_curve_address: bondingCurveAddress,
             }), {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -358,8 +360,7 @@ serve(async (req) => {
     } catch (error) {
         console.error("agent-trade error:", error);
         return new Response(JSON.stringify({
-            error: "Server error",
-            details: error instanceof Error ? error.message : "Unknown error"
+            error: "Server error"
         }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 500,
