@@ -1,10 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { createSupabaseAdmin, jsonResponse, predictionCorsHeaders as corsHeaders, requireAdminKey } from "../_shared/predictions.ts";
 
 interface GenerateMarketsRequest {
   eventId: string;
@@ -31,32 +26,12 @@ serve(async (req) => {
     });
   }
 
+  if (req.method !== "POST") return jsonResponse({ error: "Use POST" }, 405);
+  const admin = requireAdminKey(req);
+  if (admin instanceof Response) return admin;
+
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "No authorization header" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    // Verify user (optional: could add admin check here)
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Authentication failed" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
-    }
-
+    const supabaseAdmin = createSupabaseAdmin();
     let body: GenerateMarketsRequest;
     try {
       body = await req.json();

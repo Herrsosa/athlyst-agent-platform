@@ -38,29 +38,8 @@ export function usePredictionCredits() {
         throw error;
       }
 
-      // If no credits exist, create them
-      if (!data) {
-        console.log('[PredictionCredits] No credits found, creating new record');
-        const { data: newCredits, error: insertError } = await supabase
-          .from('prediction_credits')
-          .insert({ user_id: user.id, balance: 1000 })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error('[PredictionCredits] Error creating credits:', insertError);
-          // If insert fails (e.g., RLS), return a default
-          return {
-            userId: user.id,
-            balance: 1000,
-            totalEarned: 0,
-            totalWagered: 0,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-        }
-        return transformCredits(newCredits);
-      }
+      // The profile trigger initializes new users; the migration covers older profiles.
+      if (!data) return null;
 
       console.log('[PredictionCredits] Found credits:', data);
       return transformCredits(data);

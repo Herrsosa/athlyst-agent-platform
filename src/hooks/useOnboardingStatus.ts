@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 import { useUser } from '@/store/auth';
 
-type ProfileRow = Database['public']['Tables']['profiles']['Row'] | null;
+type ProfileRow = Pick<Database['public']['Tables']['profiles']['Row'], 'role' | 'onboarding_completed'> | null;
 
 interface OnboardingStatusResult {
   profile: ProfileRow;
@@ -32,7 +32,7 @@ export function useOnboardingStatus() {
       const [{ data: profile, error: profileError }, { data: athleteToken, error: tokenError }] = await Promise.all([
         supabase
           .from('profiles')
-          .select('*')
+          .select('role, onboarding_completed')
           .eq('id', user.id)
           .maybeSingle(),
         supabase

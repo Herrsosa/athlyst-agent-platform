@@ -1,11 +1,9 @@
 // Backfill a single on-chain trade into the DB.
 // Usage: node scripts/backfill-trade.mjs
 
-import { createClient } from '@supabase/supabase-js';
+import { createMaintenanceClient } from './supabase-maintenance.mjs';
 import { ethers } from 'ethers';
 
-const SUPABASE_URL = 'https://ssnehmposgsczoadycms.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmVobXBvc2dzY3pvYWR5Y21zIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODgxNjk2OCwiZXhwIjoyMDc0MzkyOTY4fQ.FD0mQXKlbwsZYBdX9_kL8_7-iE4oIliWRgc1RO99ptA';
 const RPC_URL = 'https://rpc.monad.xyz';
 const BONDING_CURVE = '0x946a333dB43BEFb080c2D9FA9d816F96437bC07B';
 
@@ -26,7 +24,7 @@ const FEE_BPS = 300n;
 
 async function main() {
     const provider = new ethers.JsonRpcProvider(RPC_URL);
-    const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+    const supabase = createMaintenanceClient();
     const iface = new ethers.Interface(ABI);
 
     // Check if already indexed
