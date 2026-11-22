@@ -1,3 +1,4 @@
+import { createRequestId } from '@/utils/requestId';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './use-toast';
@@ -78,14 +79,7 @@ export function useTrade() {
         throw new Error('Not authenticated. Please sign in to trade.');
       }
 
-      const makeId = () => {
-        if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-          return crypto.randomUUID();
-        }
-        return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-      };
-
-      const idempotencyKey = variables.idempotencyKey ?? makeId();
+      const idempotencyKey = variables.idempotencyKey ?? createRequestId();
       variables.idempotencyKey = idempotencyKey;
 
       const context = applyOptimisticTrade({

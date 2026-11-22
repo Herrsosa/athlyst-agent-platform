@@ -30,8 +30,9 @@ serve(async (req) => {
         }
 
         // 1. Create a unique username for the agent
-        const username = name.toLowerCase().replace(/\s+/g, '_') + '_' + Math.floor(Math.random() * 1000);
         const userId = crypto.randomUUID();
+        const suffix = userId.slice(0, 8);
+        const username = name.toLowerCase().replace(/\s+/g, '_') + '_' + suffix;
         const apiKey = crypto.randomUUID();
 
         // 2. Insert into profiles
@@ -58,7 +59,7 @@ serve(async (req) => {
             .from("athlete_tokens")
             .insert({
                 athlete_id: userId,
-                symbol: `${symbol}_${Math.floor(Math.random() * 100)}`,
+                symbol: `${symbol}_${suffix}`,
                 supply: 1, // Start with 1 so agent appears in marketplace
                 a: 0.0002,
                 b: 0.02,
