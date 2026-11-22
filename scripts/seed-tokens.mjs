@@ -3,11 +3,9 @@
  * Buys 1 token of each zero-supply athlete on the bonding curve.
  */
 import { ethers } from "ethers";
-import { createClient } from "@supabase/supabase-js";
+import { createMaintenanceClient } from './supabase-maintenance.mjs';
 
 const CONTRACT = "0x946a333dB43BEFb080c2D9FA9d816F96437bC07B";
-const SUPABASE_URL = "https://ssnehmposgsczoadycms.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmVobXBvc2dzY3pvYWR5Y21zIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODgxNjk2OCwiZXhwIjoyMDc0MzkyOTY4fQ.FD0mQXKlbwsZYBdX9_kL8_7-iE4oIliWRgc1RO99ptA";
 
 const ABI = [
     "function buy(address athlete, uint256 qty) external payable",
@@ -19,7 +17,7 @@ async function main() {
     const privateKey = process.env.PRIVATE_KEY;
     if (!privateKey) { console.error("Set PRIVATE_KEY env var"); process.exit(1); }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createMaintenanceClient();
 
     const { data: tokens } = await supabase
         .from("athlete_tokens")

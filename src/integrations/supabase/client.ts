@@ -5,7 +5,7 @@ import type { Database } from './types';
 // Lovable preview/published builds don't inject Vite env vars reliably.
 // Use the project ref directly.
 const SUPABASE_URL = 'https://ssnehmposgsczoadycms.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY =
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmVobXBvc2dzY3pvYWR5Y21zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MTY5NjgsImV4cCI6MjA3NDM5Mjk2OH0.8ZQTD37ttM_yAvRb0cEylu8m47AGGRUuHXdeCu9Vlw4';
 
 // Import the supabase client like this:

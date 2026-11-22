@@ -134,6 +134,7 @@ serve(async (req) => {
                         contribution_type
                     )
                 `)
+                .eq("visibility", "public")
                 .order("created_at", { ascending: false })
                 .limit(limit);
 
